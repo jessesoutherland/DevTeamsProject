@@ -11,12 +11,12 @@ namespace DevTeams_Console
     {
         private Developer_Repo _devRepo = new Developer_Repo();
         private DevTeam_Repo _devTeamRepo = new DevTeam_Repo();
+
         public void Run()
         {
             SeedData();
             MainMenu();
         }
-
         private void MainMenu()
         {
             bool isRunning = true;
@@ -27,7 +27,7 @@ namespace DevTeams_Console
                 Console.WriteLine("Komodo Team Management\n\n");
                 Console.WriteLine
                     (
-                        "\nPlease select an option and press the Enter key:\n\n" +
+                        "\nPlease select an option:\n\n" +
                         "1. Developers\n" +
                         "2. Teams\n" +
                         "3. Exit"
@@ -47,8 +47,8 @@ namespace DevTeams_Console
                         isRunning = false;
                         break;
                     default:
-                        Console.WriteLine("\n\nYou have entered an invalid selection.\n + Press any key to continue.");
-                        Console.ReadKey();
+                        Console.WriteLine("\n\nYou have entered an invalid selection.");
+                        PressAnyKeyToContinue();
                         break;
                 }
             }
@@ -62,7 +62,7 @@ namespace DevTeams_Console
 
                 Console.WriteLine
                     (
-                        "\nPlease select an option and press the Enter key:\n\n" +
+                        "\nPlease select an option:\n\n" +
                         "1. Show All Developers\n" +
                         "2. Show All Developers Without a Plualsight License\n" +
                         "3. Add Developers\n" +
@@ -93,8 +93,8 @@ namespace DevTeams_Console
                         isRunning = false;
                         break;
                     default:
-                        Console.WriteLine("\n\nYou have entered an invalid selection.\n + Press any key to continue.");
-                        Console.ReadKey();
+                        Console.WriteLine("\n\nYou have entered an invalid selection.");
+                        PressAnyKeyToContinue();
                         break;
                 }
             }
@@ -137,14 +137,14 @@ namespace DevTeams_Console
                         AddDevsToTeam();
                         break;
                     case "6":
-                        DeleteDevsFromTeam();
+                        RemoveDevsFromTeam();
                         break;
                     case "7":
                         isRunning = false;
                         break;
                     default:
-                        Console.WriteLine("\n\nYou have entered an invalid selection.\n + Press any key to continue.");
-                        Console.ReadKey();
+                        Console.WriteLine("\n\nYou have entered an invalid selection.");
+                        PressAnyKeyToContinue();
                         break;
                 }
             }
@@ -162,14 +162,22 @@ namespace DevTeams_Console
 
             PressAnyKeyToContinue();
         }
-        private void ShowAllDevsWithoutPluralsight() { }
-        //{
-        //    Console.Clear();
+        private void ShowAllDevsWithoutPluralsight()
+        {
+            Console.Clear();
 
-        //    List<Developer> listOfDevelopers = _devRepo.GetDevelopers();
+            List<Developer> listOfDevelopers = _devRepo.GetDevelopers();
 
-        //    if(listOfDevelopers)
-        //}
+            foreach(Developer dev in listOfDevelopers)
+            {
+                if(dev.AccessToPluralsight == false)
+                {
+                    DisplayDevs(dev);
+                }
+            }
+            PressAnyKeyToContinue();
+
+        }
         private void AddDevelopers()
         {
             Console.Clear();
@@ -204,15 +212,69 @@ namespace DevTeams_Console
         }
         private void UpdateDeveloper()
         {
+            Console.Clear();
+
+            ShowAllDevs();
+
+            Console.WriteLine("\nEnter the ID number of the developer you'd like to update:");
+            int dev = Convert.ToInt32(Console.ReadLine());
+
+            Developer targetDev = _devRepo.GetDevByID(dev);
+
+            if(targetDev == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
+
+            Developer updatedDev = new Developer();
+
+            Console.WriteLine("\n\nIf you don't wish to update a certain property just enter the original info of that property.\n");
+
+            Console.WriteLine($"\nOriginal first name: {targetDev.FirstName}\n" +
+                $"\nEnter new first name:");
+            updatedDev.FirstName = Console.ReadLine();
+
+            Console.WriteLine($"\nOriginal last name: {targetDev.LastName}\n" +
+                 $"\nEnter new last name:");
+            updatedDev.LastName = Console.ReadLine();
+
+            Console.WriteLine($"\nOriginal ID number: {targetDev.IDNumber}\n" +
+                 $"\nEnter new ID number:");
+            updatedDev.IDNumber = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine($"\nOriginal Pluralsight license status: {targetDev.AccessToPluralsight}\n" +
+                 $"\nEnter new Pluralsight license status:");
+            updatedDev.AccessToPluralsight = Convert.ToBoolean(Console.ReadLine());
+
+            if (_devRepo.UpdateDeveloper(targetDev.IDNumber, updatedDev))
+            {
+                Console.WriteLine("\nUpdate Successful");
+            }
+            else
+            {
+                Console.WriteLine("\nUpdate was not successful");
+            }
+            PressAnyKeyToContinue();
 
         }
         private void DeleteDevelopers()
         {
             ShowAllDevs();
 
-            Console.WriteLine("\n\nEnter the ID number of the developer you'd like to delete and press Enter:");
+            Console.WriteLine("\n\nEnter the ID number of the developer you'd like to delete:");
 
             int input = Convert.ToInt32(Console.ReadLine());
+
+            Developer targetDev = _devRepo.GetDevByID(input);
+
+            if (targetDev == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
 
             bool wasDeleted = _devRepo.DeleteDeveloper(input);
 
@@ -268,7 +330,43 @@ namespace DevTeams_Console
         }
         private void UpdateTeam()
         {
+            Console.Clear();
 
+            ShowAllTeams();
+
+            Console.WriteLine("\nEnter the ID number of the team you'd like to update:");
+            int team = Convert.ToInt32(Console.ReadLine());
+
+            DevTeam targetTeam = _devTeamRepo.GetTeamByID(team);
+
+            if (targetTeam == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
+
+            DevTeam updatedTeam = new DevTeam();
+
+            Console.WriteLine("\n\nIf you don't wish to update a certain property just enter the original info of that property.\n");
+
+            Console.WriteLine($"\nOriginal team name: {targetTeam.TeamName}\n" +
+                $"\nEnter new team name:");
+            updatedTeam.TeamName = Console.ReadLine();
+
+            Console.WriteLine($"\nOriginal team ID number: {targetTeam.TeamID}\n" +
+                 $"\nEnter new ID number:");
+            updatedTeam.TeamID = Convert.ToInt32(Console.ReadLine());
+            bool wasUpdated = _devTeamRepo.UpdateTeam(targetTeam.TeamID, updatedTeam);
+            if (wasUpdated)
+            {
+                Console.WriteLine("\nUpdate Successful");
+            }
+            else
+            {
+                Console.WriteLine("\nUpdate was not successful");
+            }
+            PressAnyKeyToContinue();
         }
         private void DeleteTeam()
         {
@@ -276,9 +374,18 @@ namespace DevTeams_Console
 
             ShowAllTeams();
 
-            Console.WriteLine("\n\nEnter the ID number of the team you'd like to delete and press Enter:");
+            Console.WriteLine("\n\nEnter the ID number of the team you'd like to delete:");
 
             int input = Convert.ToInt32(Console.ReadLine());
+
+            DevTeam targetTeam = _devTeamRepo.GetTeamByID(input);
+
+            if (targetTeam == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
 
             bool wasDeleted = _devTeamRepo.RemoveDevTeam(input);
 
@@ -295,10 +402,105 @@ namespace DevTeams_Console
         }
         private void AddDevsToTeam()
         {
+            Console.Clear();
+
+            List<Developer> listOfDevelopers = _devRepo.GetDevelopers();
+            List<DevTeam> listOfDevTeams = _devTeamRepo.GetDevTeamList();
+
+            ShowAllDevs();
+
+            Console.WriteLine("\nEnter the ID number of the developer you would like to add:");
+            int dev = Convert.ToInt32(Console.ReadLine());
+
+            Developer targetDev = _devRepo.GetDevByID(dev);
+            
+            if (targetDev == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
+            Console.Clear();
+
+            ShowAllTeams();
+
+            Console.WriteLine("\nEnter the ID number of the team you'd like to add the developer to:");
+            int team = Convert.ToInt32(Console.ReadLine());
+
+            DevTeam targetTeam = _devTeamRepo.GetTeamByID(team);
+
+            if (targetTeam == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
+            
+            bool wasAdded = _devTeamRepo.AddDevToTeam(team, targetDev);
+
+            if (wasAdded)
+            {
+                Console.WriteLine("\n\nThe developer was successfully added.");
+            }
+            else
+            {
+                Console.WriteLine("\nThe developer could not be added.");
+            }
+
+            Console.WriteLine("\n\nYou would like to add another developer to a team. True or False?");
+            bool answer = Convert.ToBoolean(Console.ReadLine());
+
+            if(answer == true)
+            {
+                AddDevsToTeam();
+            }
+
+            PressAnyKeyToContinue();
 
         }
-        private void DeleteDevsFromTeam()
+        private void RemoveDevsFromTeam()
         {
+            Console.Clear();
+
+            ShowAllTeams();
+
+            Console.WriteLine("\n\nEnter the ID number of the developer you'd like to remove from a team:");
+            int input = Convert.ToInt32(Console.ReadLine());
+
+            Developer targetDev = _devRepo.GetDevByID(input);
+
+            if (targetDev == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
+
+            Console.WriteLine("\nEnter the ID number of the team you'd like to remove the developer from:");
+            int inputTwo = Convert.ToInt32(Console.ReadLine());
+
+            DevTeam targetTeam = _devTeamRepo.GetTeamByID(inputTwo);
+
+            if (targetTeam == null)
+            {
+                Console.WriteLine("\n\nUnable to find selection");
+                PressAnyKeyToContinue();
+                return;
+            }
+
+            //bool wasDeleted = _devTeamRepo.RemoveDevFromTeam(inputTwo, );
+
+            //if (wasDeleted)
+            //{
+            //    Console.WriteLine("\n\nThe developer was successfully deleted.");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("\nThe developer could not be deleted.");
+            //}
+
+            PressAnyKeyToContinue();
+
 
         }
 
@@ -318,8 +520,13 @@ namespace DevTeams_Console
             Console.WriteLine
                 (
                     $"\n\nTeam Name: {team.TeamName}\n" +
-                    $"Team ID: {team.TeamID}"
+                    $"Team ID: {team.TeamID}\n" +
+                    $"Team Members:"
                 );
+            foreach(Developer dev in team.DevsOnTeam)
+            {
+                DisplayDevs(dev);
+            }
         }
         
         private void PressAnyKeyToContinue()
@@ -338,6 +545,9 @@ namespace DevTeams_Console
             DevTeam numUno = new DevTeam("Warriors", 12345);
             DevTeam numDos = new DevTeam("Worriers", 54321);
 
+            numUno.DevsOnTeam.Add(numOne);
+            numUno.DevsOnTeam.Add(numTwo);
+
             _devRepo.AddDeveloperToDirectory(numOne);
             _devRepo.AddDeveloperToDirectory(numTwo);
             _devRepo.AddDeveloperToDirectory(numThree);
@@ -348,3 +558,10 @@ namespace DevTeams_Console
         }
     }
 }
+
+//Adding team members to team seed data (fixes needed in ProgramUI-DisplayTeams, SeedData / DevRepo)
+//Issue with end of RemoveDevsFromTeam
+//git issues
+
+
+

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DevTeams_Repo
 {
-    public class DevTeam : Developer
+    public class DevTeam
     {
         public DevTeam() { }
 
@@ -19,5 +19,7 @@ namespace DevTeams_Repo
         public string TeamName { get; set; }
 
         public int TeamID { get; set; }
+
+        public List<Developer> DevsOnTeam { get; set; } = new List<Developer>();
     }
 }

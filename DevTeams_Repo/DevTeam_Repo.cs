@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace DevTeams_Repo
 {
-    public class DevTeam_Repo : Developer_Repo
+    public class DevTeam_Repo
     {
        public readonly List<DevTeam> _devTeamList = new List<DevTeam>();
 
-        //Create
         public bool AddDevTeamToList(DevTeam team)
         {
             int startingCount = _devTeamList.Count;
@@ -21,13 +20,11 @@ namespace DevTeams_Repo
             return wasAdded;
         }
 
-        //Read
         public List<DevTeam> GetDevTeamList()
         {
             return _devTeamList;  
         }
 
-        //Update
         public bool UpdateTeam(int iD, DevTeam newTeam)
         {
             DevTeam oldTeam = GetTeamByID(iD);
@@ -44,32 +41,32 @@ namespace DevTeams_Repo
             }
         }
 
-        //public bool AddDevToTeam(int devTeamID, Developer Developer)
-        //{
-        //    DevTeam team = GetTeamById(devTeamID);
-        //    if (team != null)
-        //    {
-        //        team.TeamName.Add(Developer);
-        //        return true;
-        //    }
-        //    return false;
-        //}
+        public bool AddDevToTeam(int devTeamID, Developer dev)
+        {
+            DevTeam team = GetTeamByID(devTeamID);
+            if (team != null)
+            {
+                team.DevsOnTeam.Add(dev);
+                //How to remove from Dev List
+                return true;
+            }
+            return false;
+        }
 
-        //public bool AddDevListToTeam(int devTeamID, List<Developer> devs)
-        //{
-        //    DevTeam team = GetTeamById(devTeamID);
-        //    if (team != null)
-        //    {
-        //        foreach (Developer dev in devs)
-        //        {
-        //            team.TeamName.Add(devs);
-        //        }
-        //        return true;
-        //    }
-        //    return false;
-        //}
+        public bool RemoveDevFromTeam(int devTeamID, List<Developer> devs)
+        {
+            DevTeam team = GetTeamByID(devTeamID);
+            if (team != null)
+            {
+                foreach (Developer dev in devs)
+                {
+                    team.DevsOnTeam.Remove(dev);
+                }
+                return true;
+            }
+            return false;
+        }
 
-        //Delete
         public bool RemoveDevTeam(int devTeamID)
         {
             DevTeam team = GetTeamByID(devTeamID);
@@ -91,8 +88,7 @@ namespace DevTeams_Repo
             return false;
         }
 
-        //Helper Method
-
+        
         public DevTeam GetTeamByID(int iD)
         {
             foreach (DevTeam team in _devTeamList)
