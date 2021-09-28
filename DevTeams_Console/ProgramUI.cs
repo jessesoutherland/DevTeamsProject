@@ -509,7 +509,7 @@ namespace DevTeams_Console
         {
             Console.WriteLine
                 (
-                    $"\n\nFirst Name: {dev.FirstName}\n" +
+                    $"\nFirst Name: {dev.FirstName}\n" +
                     $"Last Name: {dev.LastName}\n" +
                     $"ID Number: {dev.IDNumber}\n" +
                     $"Pluralsight licensed: {dev.AccessToPluralsight}"
@@ -519,7 +519,7 @@ namespace DevTeams_Console
         {
             Console.WriteLine
                 (
-                    $"\n\nTeam Name: {team.TeamName}\n" +
+                    $"\n\n\nTeam Name: {team.TeamName}\n" +
                     $"Team ID: {team.TeamID}\n" +
                     $"Team Members:"
                 );
