@@ -53,15 +53,12 @@ namespace DevTeams_Repo
             return false;
         }
 
-        public bool RemoveDevFromTeam(int devTeamID, List<Developer> devs)
+        public bool RemoveDevFromTeam(int devTeamID, Developer dev)
         {
             DevTeam team = GetTeamByID(devTeamID);
             if (team != null)
             {
-                foreach (Developer dev in devs)
-                {
                     team.DevsOnTeam.Remove(dev);
-                }
                 return true;
             }
             return false;

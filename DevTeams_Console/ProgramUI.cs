@@ -488,16 +488,16 @@ namespace DevTeams_Console
                 return;
             }
 
-            //bool wasDeleted = _devTeamRepo.RemoveDevFromTeam(inputTwo, );
+            bool wasDeleted = _devTeamRepo.RemoveDevFromTeam(inputTwo, targetDev );
 
-            //if (wasDeleted)
-            //{
-            //    Console.WriteLine("\n\nThe developer was successfully deleted.");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("\nThe developer could not be deleted.");
-            //}
+            if (wasDeleted)
+            {
+                Console.WriteLine("\n\nThe developer was successfully deleted.");
+            }
+            else
+            {
+                Console.WriteLine("\nThe developer could not be deleted.");
+            }
 
             PressAnyKeyToContinue();
 
@@ -559,9 +559,7 @@ namespace DevTeams_Console
     }
 }
 
-//Adding team members to team seed data (fixes needed in ProgramUI-DisplayTeams, SeedData / DevRepo)
-//Issue with end of RemoveDevsFromTeam
-//git issues
+
 
 
 
